@@ -24,7 +24,7 @@ minima:
 #  - about.html
 
 # Build settings
-gems:
+plugins:
   - jekyll-seo-tag
 markdown: kramdown
 theme: minima
