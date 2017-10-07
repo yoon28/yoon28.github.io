@@ -2,6 +2,7 @@
 layout: page
 title: About
 permalink: /about/
+comments: false
 ---
 
 Hi, I am Kwangjin Yoon from South Korea.
