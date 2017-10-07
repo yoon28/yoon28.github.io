@@ -3,6 +3,7 @@ layout: post
 title: "Back Propagation and Auto Differentiation"
 author: "Kwnagjin Yoon"
 tags: deep-learning back-propagation auto-differentiation
+published: false
 ---
 
 
