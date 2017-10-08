@@ -85,6 +85,9 @@ $$\frac{\partial E}{\partial w_{ji}} = \delta_i o_j$$
 
 $$\delta_i = \frac{\partial E}{\partial o_i} \frac{\partial o_i}{\partial\text{net}_i} = \left\{ \begin{array}{rcl} (y_u - t_u)o_i(1-o_i) & \text{if } i \in \mathcal{O}, \text{ and } o_i = y_u    \\ \left( \sum_{l\in\mathcal{L}}{\delta_l w_{il}} \right) o_i(1-o_i) & \text{if } i \in \mathcal{N} \setminus \mathcal{O}  \end{array} \right. $$
 
+이다.
+
+
 그럼 마지막으로 위 그림에서 가중치 $$w_{14}$$을 $$E$$에 대해서 실제로 미분을 해보고 마쳐보자. $$w_{14}$$ 에 연결된 $$4$$번 노드는 output 층에 위치해 있지 않아서 output층에 있지 않는 노드에 대해서 미분하는 방법의 좋은 예제가 될 거다. 우선 시작은 $$w_{14}$$로 $$E$$를 편미분을 하는 식을 써보자.
 
 $$\frac{\partial E}{\partial w_{14}} =  \frac{\partial E}{\partial o_{4}} \frac{\partial o_4}{\partial \text{net}_{4}} \frac{\partial \text{net}_4}{\partial w_{14}}. $$
