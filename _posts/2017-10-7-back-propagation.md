@@ -1,12 +1,11 @@
 ---
 layout: post
 title: "Back Propagation and Auto Differentiation"
-author: "Kwnagjin Yoon"
-tags: deep-learning back-propagation auto-differentiation
+author: "Kwangjin Yoon"
+tags: deep-learning back-propagation auto-differentiation 역전파 백프로파게이션 자동미분
 ---
 
-
-Back propagation(BP)은 딥러닝에서 뉴럴넷의 Weight를 업데이트하는데 쓰이는 알고리즘이고 Auto differentiation(AD)은 컴퓨터가 미분을 할수 있게 해주는 알고리즘 중 하나다. TensorFlow, PyTorch 등에서 BP가 AD를 이용하여 구현되었다고 함.
+Back propagation(BP, 백프로파게이션, 역전파)은 딥러닝에서 뉴럴넷의 Weight를 업데이트하는데 쓰이는 알고리즘이고 Auto differentiation(AD, 자동미분)은 컴퓨터가 미분을 할수 있게 해주는 알고리즘 중 하나다. TensorFlow, PyTorch 등에서 BP가 AD를 이용하여 구현되었다고 함.
 
 참고:
 [link1](https://en.wikipedia.org/wiki/Backpropagation)
@@ -110,7 +109,7 @@ $$ \frac{\partial E}{\partial w_{14}} = \delta_4 o_1 = \left( \sum_{l\in\mathcal
 
 ## Auto differentiation
 
-컴퓨터가 미분을 하는 방법에는 Numerical differentiation, Symbolic differentiation 그리고 Auto differentiation이 있다. 딥러닝에서 사용되는 에러 함수는 다양하고 activiation function도 여러가지가 쓰인다. 또한 뉴럴넷의 구조도 사용자 마음대로 구성 할 수 있다. 그렇기 때문에 그때그때 back propagation을 노드의 간선들 마다 구현해 주는 것은 (불가능은 아니겠지만) 매우 많이 번거로울 것이다. 게다가 뉴럴넷의 구조가 조금이라도 바뀌게되면 해당부분의 BP를 다시 구현해줘야하니 엄청 비효율적일 것 같다. TensorFlow나 PyTorch는 그러한 문제점을 AD를 통해서 해결했기때문에 사용자 임의대로 에러 함수를 정의하고 activiation function을 노드마다 다르게 설정 할 수도 있고 연결 구조도 마음대로 바꿀수 있는 것이다. 여기서는 AD가 무엇인지 알아보고 그것이 어떻게 BP와 연결될 수 있는지 볼 것이다.
+컴퓨터가 미분을 하는 방법에는 Numerical differentiation, Symbolic differentiation 그리고 Auto differentiation이 있다. 딥러닝에서 사용되는 에러 함수는 다양하고 activiation function도 여러가지가 쓰인다. 또한 뉴럴넷의 구조도 사용자 마음대로 구성 할 수 있다. 그렇기 때문에 그때그때 back propagation을 노드의 간선들 마다 구현해 주는 것은 (불가능은 아니겠지만) 매우 많이 번거로울 것이다. 게다가 뉴럴넷의 구조가 조금이라도 바뀌게되면 해당 부분의 BP를 다시 구현해줘야하니 엄청 비효율적일 것 같다. TensorFlow나 PyTorch는 그러한 문제점을 AD를 통해서 해결했기때문에 사용자 임의대로 에러 함수를 정의하고 activiation function을 노드마다 다르게 설정 할 수도 있고 연결 구조도 마음대로 바꿀수 있는 것이다. 여기서는 AD가 무엇인지 알아보고 그것이 어떻게 BP와 연결될 수 있는지 볼 것이다.
 
 
 *작성 중...*
