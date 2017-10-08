@@ -2,14 +2,14 @@
 layout: post
 title: "Back Propagation and Auto Differentiation"
 author: "Kwangjin Yoon"
-tags: deep-learning back-propagation auto-differentiation 역전파 백프로파게이션 자동미분
+tags: deep-learning back-propagation auto-differentiation 역전파 자동미분
 ---
 
-Back propagation(BP, 백프로파게이션, 역전파)은 딥러닝에서 뉴럴넷의 Weight를 업데이트하는데 쓰이는 알고리즘이고 Auto differentiation(AD, 자동미분)은 컴퓨터가 미분을 할수 있게 해주는 알고리즘 중 하나다. TensorFlow, PyTorch 등에서 BP가 AD를 이용하여 구현되었다고 함.
+Back propagation(BP, 백프로파게이션, 역전파)은 딥러닝에서 뉴럴넷의 weight들을 업데이트하는데 쓰이는 알고리즘이고 Auto differentiation(AD, 자동미분)은 컴퓨터가 미분을 할수 있게 해주는 알고리즘 중 하나다. TensorFlow, PyTorch 등에서 BP가 AD를 이용하여 구현되었다고 함.
 
 참고:
-[link1](https://en.wikipedia.org/wiki/Backpropagation)
-[link2](http://neuralnetworksanddeeplearning.com/chap2.html)
+[link1](https://en.wikipedia.org/wiki/Backpropagation), 
+[link2](http://neuralnetworksanddeeplearning.com/chap2.html), 
 [link3](https://www.suchin.co/2017/03/18/Automatic-Differentiation-and-Backpropagation/)
 
 -----
