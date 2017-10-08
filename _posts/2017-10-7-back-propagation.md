@@ -110,7 +110,7 @@ $$ \frac{\partial E}{\partial w_{14}} = \left( \sum_{l\in\mathcal{L}}{\delta_l w
 
 ## Auto differentiation
 
-컴퓨터가 미분을 하는 방법에는 Numerical differentiation, Symbolic differentiation 그리고 Auto differentiation 이 있다.
+컴퓨터가 미분을 하는 방법에는 Numerical differentiation, Symbolic differentiation 그리고 Auto differentiation이 있다. 딥러닝에서 사용되는 에러 함수는 다양하고 activiation function도 여러가지가 쓰인다. 또한 뉴럴넷의 구조도 사용자 마음대로 구성 할 수 있기 때문에 back propagation을 그때그때 노드마다 구현해 주는 것은 불가능은 아니지만 매우 많이 번거로울 것이다. tensorflow나 pytorch는 그러한 문제점을 AD를 통해서 해결했기때문에 사용자 임의대로 에러 함수를 정의하고 activiation function을 노드마다 다르게 설정 할 수도 있고 연결 구조도 마음대로 바꿀수 있는 것이다. 여기서는 AD가 무엇인지 알아보고 그것이 어떻게 BP와 연결될 수 있는지 볼 것이다.
 
 
 *작성 중...*
