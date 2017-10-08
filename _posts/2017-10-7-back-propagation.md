@@ -68,7 +68,7 @@ $$ \frac{\partial o_i}{\partial \text{net}_{i}} = \varphi(\text{net}_{i})(1-\var
 
 $$\frac{\partial E}{\partial o_i}=\frac{\partial E}{\partial y_u}=\frac{\partial}{\partial y_u}\frac{1}{2}\sum_j{(t_j-y_j)^2} = y_u - t_u$$
 
-가 된다. 이번에는 output 층에 위치해 있지 않은 노드에 대해서 생각하자. output 층에 위치해 있지 않은 노드 $$i$$의 $$o_i$$는 $$E$$와 직접적인 관련이 없으므로 바로 첫 번째 항을 계산 할 수는 없고 바로 앞선 층에서(output 층 방향으로 한 층만 더) 계산된 미분 값을 이용해서 계산을 한다. $$o_i$$ 가 연결되어진 하나 앞선 층에 속한 노드들의 집합을 $$\mathcal{L}$$ 라고 하자($$\mathcal{L} \subset \mathcal{N}$$). 계속해서 output 층까지 해당 집합들을 찾아간다면 $$E$$를 $$o_i$$의 함수로 볼 수 있게 된다. 일단 바로 앞선 층의 $$i$$와 연결된 노드들이 $$\mathcal{L} = \{a,b,...,c\}$$ 라고 하자. 그럼 그 $$\text{net}_a,\text{net}_b,...,\text{net}_c$$ 들은 $$o_i$$를 포함하고 있고 $$o_a, o_b, ..., o_c$$들은 $$E$$를 향해 연결되어 있기 때문이다. 즉,
+가 된다. 이번에는 output 층에 위치해 있지 않은 노드에 대해서 생각하자. output 층에 위치해 있지 않은 노드 $$i$$의 $$o_i$$는 $$E$$와 직접적인 관련이 없으므로 바로 첫 번째 항을 계산 할 수는 없고 바로 앞선 층에서(output 층 방향으로 한 층만 더) 계산된 미분 값을 이용해서 계산을 한다. $$o_i$$ 와 연결되어진 하나 앞선 층에 속한 노드들의 집합을 $$\mathcal{L}$$ 라고 하자($$\mathcal{L} \subset \mathcal{N}$$). 계속해서 output 층까지 해당 집합들을 찾아간다면 $$E$$를 $$o_i$$의 함수로 볼 수 있게 된다. 일단 바로 앞선 층의 $$i$$와 연결된 노드들이 $$\mathcal{L} = \{a,b,...,c\}$$ 라고 하자. 그럼 그 $$\text{net}_a,\text{net}_b,...,\text{net}_c$$ 들은 $$o_i$$를 포함하고 있고 이 $$o_a, o_b, ..., o_c$$들은 $$E$$를 향해 연결되어 있기 때문이다. 즉,
 
 $$\frac{\partial E(o_i)}{\partial o_i} = \frac{\partial E(\varphi(\text{net}_a),\varphi(\text{net}_b),...,\varphi(\text{net}_c))}{\partial o_i} $$
 
@@ -84,7 +84,7 @@ $$\frac{\partial E}{\partial w_{ji}} = \delta_i o_j$$
 
 여기서 $$\delta_i$$ 는
 
-$$\delta_i = \frac{\partial E}{\partial o_i} \frac{\partial o_i}{\partial\text{net}_i} = \left\{ \begin{array}{rcl} (y_u - t_u)o_i(1-o_i) & \text{if } i \in \mathcal{H}, \text{ and } o_i = y_u    \\ \left( \sum_{l\in\mathcal{L}}{\delta_l w_{il}} \right) o_i(1-o_i) & \text{if } i \in \mathcal{N} \setminus \mathcal{H}  \end{array} \right. $$
+$$\delta_i = \frac{\partial E}{\partial o_i} \frac{\partial o_i}{\partial\text{net}_i} = \left\{ \begin{array}{rcl} (y_u - t_u)o_i(1-o_i) & \text{if } i \in \mathcal{O}, \text{ and } o_i = y_u    \\ \left( \sum_{l\in\mathcal{L}}{\delta_l w_{il}} \right) o_i(1-o_i) & \text{if } i \in \mathcal{N} \setminus \mathcal{O}  \end{array} \right. $$
 
 그럼 마지막으로 위 그림에서 가중치 $$w_{14}$$을 $$E$$에 대해서 실제로 미분을 해보고 마쳐보자. $$w_{14}$$ 에 연결된 $$4$$번 노드는 output 층에 위치해 있지 않아서 output층에 있지 않는 노드에 대해서 미분하는 방법의 좋은 예제가 될 거다. 우선 시작은 $$w_{14}$$로 $$E$$를 편미분을 하는 식을 써보자.
 
