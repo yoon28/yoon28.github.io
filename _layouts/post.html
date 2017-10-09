@@ -37,7 +37,7 @@ layout: default
         {% assign tags = page.tags %}
       {% endif %}
       {% for tag in tags %}
-      <li><a href="{{site.baseurl}}/tags.html">{{tag}}</a></li>
+      <li><a href="{{site.baseurl}}/tags.html">{{tag | capitalize}}</a></li>
       {% unless forloop.last %}&nbsp;{% endunless %}
       {% endfor %}
     </ul>
