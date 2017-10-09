@@ -14,7 +14,7 @@ comments: false
   <ul class="tag-box inline">
   {% for item in (0..site.categories.size) %}{% unless forloop.last %}
     {% capture this_word %}{{ tag_words[item] | strip_newlines }}{% endcapture %}
-    <li><a href="#{{ this_word | cgi_escape }}">{{ this_word }} <span>{{ site.categories[this_word].size }}</span></a></li>
+    <li><a href="#{{ this_word | cgi_escape }}">{{ this_word | capitalize }} <span>{{ site.categories[this_word].size }}</span></a></li>
   {% endunless %}{% endfor %}
   </ul>
 
@@ -24,7 +24,7 @@ comments: false
     <div id="#{{ category_name | slugize }}"></div>
     <p></p>
     
-    <h3 class="category-head">{{ category_name }}</h3>
+    <h3 class="category-head">{{ category_name | capitalize }}</h3>
     <a name="{{ category_name | slugize }}"></a>
     <ul class="posts">
     {% for post in site.categories[category_name] %}

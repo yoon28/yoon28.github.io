@@ -23,8 +23,12 @@ layout: default
       {% assign categories = page.categories %}
     {% endif %}
     {% for category in categories %}
-    {{category | capitalize}}</a>
-    {% unless forloop.last %}&nbsp;{% endunless %}
+      {{category|capitalize}} 
+      {% if forloop.last %}
+      &nbsp;
+      {% else %}
+      ,
+      {% endif %}
     {% endfor %}
     <ul class="tag-box inline">
       {% if post %}
