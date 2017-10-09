@@ -15,6 +15,31 @@ layout: default
       {% endif %}</p>
   </header>
 
+  <div class="post-categories">
+    Category:
+    {% if post %}
+      {% assign categories = post.categories %}
+    {% else %}
+      {% assign categories = page.categories %}
+    {% endif %}
+    {% for category in categories %}
+    {{category | capitalize}}</a>
+    {% unless forloop.last %}&nbsp;{% endunless %}
+    {% endfor %}
+    <ul class="tag-box inline">
+      {% if post %}
+        {% assign tags = post.tags %}
+      {% else %}
+        {% assign tags = page.tags %}
+      {% endif %}
+      {% for tag in tags %}
+      <li><a href="{{site.baseurl}}/tags.html">{{tag}}</a></li>
+      {% unless forloop.last %}&nbsp;{% endunless %}
+      {% endfor %}
+    </ul>
+    &nbsp;
+  </div>
+
   <div class="post-content" itemprop="articleBody">
     {{ content }}
   </div>

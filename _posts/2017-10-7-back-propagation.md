@@ -1,11 +1,12 @@
 ---
 layout: post
-title: "Back Propagation and Auto Differentiation"
+title: "Back Propagation and Automatic Differentiation"
 author: "Kwangjin Yoon"
-tags: deep-learning back-propagation auto-differentiation 역전파 자동미분
+categories: deep-learning
+tags: back-propagation automatic-differentiation 역전파 자동미분
 ---
 
-Back propagation(BP, 백프로파게이션, 역전파)은 딥러닝에서 뉴럴넷의 weight들을 업데이트하는데 쓰이는 알고리즘이고 Auto differentiation(AD, 자동미분)은 컴퓨터가 미분을 할수 있게 해주는 알고리즘 중 하나다. TensorFlow, PyTorch 등에서 BP가 AD를 이용하여 구현되었다고 함.
+Back propagation(BP, 백프로파게이션, 역전파)은 딥러닝에서 뉴럴넷의 weight들을 업데이트하는데 쓰이는 알고리즘이고 Automatic differentiation(AD, 자동미분)은 컴퓨터가 미분을 할수 있게 해주는 알고리즘 중 하나다. TensorFlow, PyTorch 등에서 BP가 AD를 이용하여 구현되었다고 함.
 
 참고:
 [link1](https://en.wikipedia.org/wiki/Backpropagation), 
@@ -110,9 +111,22 @@ $$ \frac{\partial E}{\partial w_{14}} = \delta_4 o_1 = \left( \sum_{l\in\mathcal
 
 -----
 
-## Auto differentiation
+## Automatic differentiation
 
-컴퓨터가 미분을 하는 방법에는 Numerical differentiation, Symbolic differentiation 그리고 Auto differentiation이 있다. 딥러닝에서 사용되는 에러 함수는 다양하고 activiation function도 여러가지가 쓰인다. 또한 뉴럴넷의 구조도 사용자 마음대로 구성 할 수 있다. 그렇기 때문에 그때그때 back propagation을 노드의 간선들 마다 구현해 주는 것은 (불가능은 아니겠지만) 매우 많이 번거로울 것이다. 게다가 뉴럴넷의 구조가 조금이라도 바뀌게되면 해당 부분의 BP를 다시 구현해줘야하니 엄청 비효율적일 것 같다. TensorFlow나 PyTorch는 그러한 문제점을 AD를 통해서 해결했기때문에 사용자 임의대로 에러 함수를 정의하고 activiation function을 노드마다 다르게 설정 할 수도 있고 연결 구조도 마음대로 바꿀수 있는 것이다. 여기서는 AD가 무엇인지 알아보고 그것이 어떻게 BP와 연결될 수 있는지 볼 것이다.
+컴퓨터가 미분을 하는 방법에는 Numerical differentiation, Symbolic differentiation 그리고 [Automatic differentiation](https://en.wikipedia.org/wiki/Automatic_differentiation)이 있다. 딥러닝에서 사용되는 에러 함수는 다양하고 activiation function도 여러가지가 쓰인다. 또한 뉴럴넷의 구조도 사용자 마음대로 구성 할 수 있다. 그렇기 때문에 그때그때 back propagation을 노드의 간선들 마다 구현해 주는 것은 (불가능은 아니겠지만) 매우 많이 번거로울 것이다. 게다가 뉴럴넷의 구조가 조금이라도 바뀌게되면 해당 부분의 BP를 다시 구현해줘야하니 엄청 비효율적일 것 같다. TensorFlow나 PyTorch는 그러한 문제점을 AD를 통해서 해결하고있기 때문에 사용자 임의대로 에러 함수를 정의하고 activiation function을 노드마다 다르게 설정 할 수도 있고 연결 구조도 마음대로 바꿀수 있는 것이다. 자기가 만든 네트워크의 BP를 어떻게 구현 할지 전혀 걱정하지 않으면서 말이다. 여기서는 AD가 무엇인지 알아보고 그것이 어떻게 BP와 연결될 수 있는지 볼 것이다. [Numerical differentiation](https://en.wikipedia.org/wiki/Numerical_differentiation)과 [Symbolic differentiation](https://en.wikipedia.org/wiki/Symbolic_differentiation)이 무엇인지는 여기서 다루지 않는다.
+
+AD는 두 가지 모드<sup>mode</sup>가 있다. 포워드 모드<sup>forward mode</sup>와 리버스 모드<sup>reverse mode</sup>이다. 우선 포워드 모드부터 보자. AD는 `어떤 함수든 다수의 쉬운 함수들의 합성으로 나타낼수 있다`라는 점에서 착안한 방법이다. 예를들어 함수 $$f(x)=4x^2$$ 를 더 쉬운 형태의 함수 $$g(x)=x^2$$, $$h(x)=2x$$의 합성으로 $$f=g \circ h = g(h(x))=(2x)^2 = 4x^2$$ 보는 식이다. 그리고 이런 합성함수의 미분에는 체인룰<sup>chain rule</sup>이 사용된다.
+
+$$ f(x)=g(h(x)) \Rightarrow f'(x) = g'(h(x))h'(x) $$
+
+이제 더 어려운 함수를 예로 들어서 AD가 어떻게 함수를 미분하는지 보자. 우선 $$f(x)$$를 
+
+$$f(x)=\frac{\ln(x)(x+3)+x^2}{\sin(x)}$$
+
+로 정의하자. 다음은 포워드 모드에서 AD가 함수를 분해하는 방법이다.
+
+
+
 
 
 *작성 중...*
