@@ -3,10 +3,10 @@ layout: post
 title: "Back Propagation and Automatic Differentiation"
 author: "Kwangjin Yoon"
 categories: 
-  - deep learning
+  - deep__learning
 tags: 
-  - back propagation 
-  - automatic differentiation 
+  - back__propagation 
+  - automatic__differentiation 
   - 역전파 
   - 자동미분
 ---
