@@ -23,7 +23,7 @@ layout: default
       {% assign categories = page.categories %}
     {% endif %}
     {% for category in categories %}
-      {{category|capitalize|replace, '__', ' '}} 
+      {{category|capitalize| replace: '__', ' '}} 
       {% if forloop.last %}
       &nbsp;
       {% else %}
@@ -37,7 +37,7 @@ layout: default
         {% assign tags = page.tags %}
       {% endif %}
       {% for tag in tags %}
-      <li><a href="{{site.baseurl}}/tags.html">{{tag | capitalize|replace, '__', ' '}}</a></li>
+      <li><a href="{{site.baseurl}}/tags.html">{{tag | capitalize| replace: '__', ' '}}</a></li>
       {% unless forloop.last %}&nbsp;{% endunless %}
       {% endfor %}
     </ul>
