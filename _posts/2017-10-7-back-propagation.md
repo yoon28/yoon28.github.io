@@ -5,8 +5,8 @@ author: "Kwangjin Yoon"
 categories: 
   - deep__learning
 tags: 
-  - back__propagation 
-  - automatic__differentiation 
+  - back propagation 
+  - automatic differentiation 
   - 역전파 
   - 자동미분
 ---
