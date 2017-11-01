@@ -8,9 +8,10 @@
 
 ## Installation instructions for local hosting
 
-First, install the ruby. This instruction will install RubyGem, too.
+First, install the ruby. Open a bash shell and type the following command. 
+This instruction will install the RubyGem as well.
 
-```bash
+```cpp
 sudo apt-get install ruby-full
 ```
 
