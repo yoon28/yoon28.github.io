@@ -21,7 +21,7 @@ Next, install the jekyll using the gem
 $gem install jekyll
 ```
 
-Then, switch to the directory of github-page where the Gemfile is located.
+Then, switch to the directory of github-page where the `Gemfile` is located.
 And type...
 
 ```bash
