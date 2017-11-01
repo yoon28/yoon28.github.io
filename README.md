@@ -6,6 +6,34 @@
 
 ![minima theme preview](/screenshot.png)
 
+## Installation instructions for local hosting
+
+First, install the ruby. This instruction will install RubyGem, too.
+
+```bash
+sudo apt-get install ruby-full
+```
+
+Next, install the jekyll using the gem
+
+```bash
+gem install jekyll
+```
+
+Then, switch to the directory of github-page where Gemfile is located.
+And type...
+
+```bash
+bundle install
+```
+
+Finally, the local hosting will be run with 
+
+```bash
+bundle exec jekyll serve
+```
+
+
 ## Installation
 
 Add this line to your Jekyll site's Gemfile:
