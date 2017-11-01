@@ -11,48 +11,28 @@
 First, install the ruby. Open a bash shell and type the following command. 
 This instruction will install the RubyGem as well.
 
-```cpp
-sudo apt-get install ruby-full
+```bash
+$sudo apt-get install ruby-full
 ```
 
 Next, install the jekyll using the gem
 
 ```bash
-gem install jekyll
+$gem install jekyll
 ```
 
-Then, switch to the directory of github-page where Gemfile is located.
+Then, switch to the directory of github-page where the Gemfile is located.
 And type...
 
 ```bash
-bundle install
+$bundle install
 ```
 
 Finally, the local hosting will be run with 
 
 ```bash
-bundle exec jekyll serve
+$bundle exec jekyll serve
 ```
-
-
-## Installation
-
-Add this line to your Jekyll site's Gemfile:
-
-```ruby
-gem "minima"
-```
-
-And add this line to your Jekyll site:
-
-```yaml
-theme: minima
-```
-
-And then execute:
-
-    $ bundle
-
 
 ## Contents At-A-Glance
 
