@@ -12,13 +12,13 @@ First, install the ruby. Open a bash shell and type the following command.
 This instruction will install the RubyGem as well.
 
 ```bash
-$sudo apt-get install ruby-full
+$sudo apt-get install ruby-full ruby-bundler git
 ```
 
 Next, install the jekyll using the gem
 
 ```bash
-$gem install jekyll
+$sudo gem install jekyll
 ```
 
 Then, switch to the directory of github-page where the `Gemfile` is located.
@@ -28,6 +28,7 @@ And type...
 $bundle install
 ```
 
+If the system outputs an error, such as a verson conflict of bundler, then upgrade the bundler by typing `sudo gem install bundler`.
 Finally, the local hosting will be run with 
 
 ```bash
