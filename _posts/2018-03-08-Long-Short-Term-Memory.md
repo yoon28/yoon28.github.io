@@ -51,7 +51,7 @@ $$\tilde{C}_t$$는 $$N_C \times 1$$ 벡터고, $$\tanh$$ 연산을 거치므로 
 먼저 $$N_C\times 1$$ 크기의 $$o_t$$를 계산한다. 역시 $$W_o$$는 $$N_C \times (N_H+N_X)$$ 행렬 $$b_o$$는 $$N_C \times 1$$ 벡터다. 그리고나서 $$o_t \ast \tanh (C_t)$$를 해서 출력 $$h_t$$를 계산한다.
 
 그런데 이때 한 가지 문제가 생긴다. 일단 $$N_H=N_C$$라면 $$h_t$$의 크기가 $$h_{t-1}$$과 같기때문에 다음 LSTM 셀의 입력으로 들어 갈 수 있다. 하지만 $$N_H \neq N_C$$라면 $$h_t$$와 $$h_{t-1}$$가 다른 크기를 가져서 문제가 생긴다.
-이때는 $$h_t$$의 크기를 $$N_H$$로 맞춰주는 레이어를 하나 더 둠으로써 해결한다. 이 레이어를 프로젝션(projection) 레이어라고도 부른다. 즉, $$h_t' = W_H h_t + b_H$$로 $$N_H \times 1$$ 크기를 가지는 $$h_t'$$를 계산하는 레이어를 두어 $$h_t'$$를 다음 셀의 입력으로 보낸다. (이 부분은 그림에서 빠져있다. 아마 $$H=C$$인 경우에 대해서만 그린것 같다. [그림 출처](http://colah.github.io/posts/2015-08-Understanding-LSTMs/))
+이때는 $$h_t$$의 크기를 $$N_H$$로 맞춰주는 레이어를 하나 더 둠으로써 해결한다. 이 레이어를 프로젝션(projection) 레이어라고도 부른다. 즉, $$h_t' = W_H h_t + b_H$$로 $$N_H \times 1$$ 크기를 가지는 $$h_t'$$를 계산하는 레이어를 두어 $$h_t'$$를 다음 셀의 입력으로 보낸다. (이 부분은 그림에서 빠져있다. 아마 $$N_H=N_C$$인 경우에 대해서만 그린것 같다. [그림 출처](http://colah.github.io/posts/2015-08-Understanding-LSTMs/))
 $$W_H$$는 $$N_H\times N_C$$ 행렬이고 $$b_H$$는 $$N_H\times 1$$ 벡터다.
 
 LSTM 네트워크의 초기 cell state와 $$h_0$$는 영 벡터를 쓰거나 임의의 값을 주기도 한다. 또 일련의 연결된 LSTM 셀들은 같은 웨이트를 가진다(weight sharing). 그러면 LSTM 네트워크에서 훈련시켜야할 것들은, $$W_f, b_f, W_i, b_i, W_C, b_C, W_o, b_o$$, 그리고 프로젝션 레이어가 있다면 $$W_H, b_H$$ 이다.
@@ -76,11 +76,11 @@ forget gate의 bias로써 디폴트로 `1`이 설정되어있다. 트레이닝 �
 40에서 77번 줄은 numpy로 구현한 LSTM 네트워크이다. 44~46번 줄에서 텐서플로 LSTM에서 사용했던 입력과 초기상태와 같은 값으로 numpy LSTM의 입력과 초기상태를 준비한다.
 50번 줄에서 입력 `x_np[seq]`와 이전 출력 `h_np`를 concatenation하고 있다. 이 결과로 `args`의 크기(원소 수)는 `num_input + num_hidden` 인 벡터가 된다.
 이제 텐서플로의 결과를 재현하기 위해서 텐서플로 LSTM의 weight 값과 bias 값을 가져와야한다. 51, 52번 줄에서 그 값들을 복사하고 있다. `weights_tf`의 0번째에는 LSTM 셀의 모든 weight들이 들어있고, 1번째에는 모든 bias들이 들어있다.
-또 projection layer가 있다면 2번째에 그 weight가 들어있다 (projection layer의 경우 bias는 없다). 이때 `weights_tf`의 0번째에는 $$W_i, W_C, W_f, W_o$$가 순서대로 들어있어서 $$(4N_C) \times (H+X)$$ 크기의 행렬이 들어있다.
+또 projection layer가 있다면 2번째에 그 weight가 들어있다 (projection layer의 경우 bias는 없다). 이때 `weights_tf`의 0번째에는 $$W_i, W_C, W_f, W_o$$가 순서대로 들어있어서 $$(4N_C) \times (N_H+N_X)$$ 크기의 행렬이 들어있다.
 1번째에는 그에 상응하는 bias들이 들어있어 $$(4N_C) \times 1$$ 크기의 벡터가 들어있다. 58, 59번 줄에서 이 weight와 bias들을 이용해 행렬 연산을 하는데 이때 이용되는 트릭은 다음과 같다.
 
-$$ \underbrace { \left( \begin{array}{c} W_i \\ W_C \\ W_f \\ W_o \end{array} \right) }_{(4N_C) \times (H+X)} \cdot 
-\underbrace{ \left( z_t \right)}_{(H+X)\times 1} + \underbrace{ \left( \begin{array}{c} b_i \\ b_C \\ b_f \\ b_o \end{array} \right)  }_{(4N_C) \times 1}
+$$ \underbrace { \left( \begin{array}{c} W_i \\ W_C \\ W_f \\ W_o \end{array} \right) }_{(4N_C) \times (N_H+N_X)} \cdot 
+\underbrace{ \left( z_t \right)}_{(N_H+N_X)\times 1} + \underbrace{ \left( \begin{array}{c} b_i \\ b_C \\ b_f \\ b_o \end{array} \right)  }_{(4N_C) \times 1}
 = \underbrace{ \left( \begin{array}{c} W_i\cdot z_t +b_i \\ W_C\cdot z_t +b_C \\ W_f\cdot z_t +b_f \\ W_o\cdot z_t +b_o \end{array} \right) }_{(4N_C) \times 1} $$
 
 이때 $$z_t = [h_{t-1}, x_t]$$ 이다. 61번 줄에서 이 연산의 결과를 4개로 분리하고 있다. (아래 numpy 구현에서는 행렬 연산이 거꾸로인 것에 주의)
