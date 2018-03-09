@@ -23,6 +23,7 @@ minima:
 plugins:
   - jekyll-seo-tag
 markdown: kramdown
+highlighter: rouge
 theme: minima
 exclude:
   - Gemfile
