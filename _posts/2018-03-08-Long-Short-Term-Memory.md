@@ -28,32 +28,33 @@ LSTM은 RNN의 특별한 케이스로 RNN처럼 LSTM 셀들을 일렬로 연결�
 ![a LSTM network](http://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-chain.png "a LSTM network")
 
 LSTM 네트워크의 핵심은 cell state인데 (위 그림에서 상단의 가로줄), 세 개의 게이트(forget gate, input gate, output gate)를 이용해서 cell state를 조절한다.
-이전 셀의 cell state는 다음 셀로 입력되는데, 이때 정보를 얼마나 통과 시킬지, 또는 새로운 입력에서 어떤 정보를 취할지 등의 작업을 cell state를 통해 할 수 있다.
+이전 셀의 cell state는 다음 셀로 입력되는데, 이때 정보를 얼마나 통과 시킬지, 또는 새로운 입력에서 어떤 정보를 취할지 등의 작업을 cell state를 통해 하게 된다.
 
 바로 구체적으로 파고 들어가 보자. 
 ![forget gate](http://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-focus-f.png "forget gate")
 위는 forget gate이다. $$h_{t-1}$$과 $$x_t$$를 입력으로 받아서 시그모이드 레이어로 출력하므로 출력이 0과 1 사이다. 0에 가까울수록 해당하는 정보가 희미해지게 되고 1에 가까우면 거의 손실없이 통과한다.
 $$[h_{t-1},x_t]$$는 벡터 concatenation 이다. 즉, $$h_{t-1}$$이 $$N_H \times 1$$ 벡터고, $$x_t$$가 $$N_X \times 1$$ 벡터라면, $$[h_{t-1},x_t]$$의 결과는 $$(N_H+N_X)\times 1$$ 벡터다. 
-그러면 $$W_f$$는 $$N_C \times (N_H+N_X) $$ 행렬이 되어야한다. $$b_f$$는 $$N_C \times 1$$ 벡터다. $$N_C$$는 cell state 벡터의 크기(원소 수)다. 시그모이드는 원소 별로(element wise) 연산을 하니까 결과적으로 $$f_t$$는 $$N_C\times 1$$의 0~1 사이의 값을 갖는 벡터다.
+그러면 $$W_f$$는 $$N_C \times (N_H+N_X) $$ 행렬이 되어야한다. $$b_f$$는 $$N_C \times 1$$ 벡터다. $$N_C$$는 cell state 벡터의 크기(원소 수)다. 즉, cell state 벡터 $$C_t$$는 $$N_C \times 1$$ 벡터다. 시그모이드는 원소 별로(element wise) 연산을 하니까 결과적으로 $$f_t$$는 $$N_C\times 1$$ 크기의 벡터로 각 원소는 0~1 사이의 값을 갖는다.
 
 다음은 input gate인데 입력으로부터 어떤 정보를 얼마나 더할지 뺄지를 결정하는 역할을 한다. 이 부분은 두개의 레이어로 되어있다.
 ![input gate](http://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-focus-i.png "input gate")
-$$i_t$$는 $$N_C \times 1$$ 벡터고, $$W_i$$는 $$N_C \times (N_H+N_X)$$ 행렬이다. $$b_i$$는 $$N_C \times 1$$ 벡터다. $$W_C, b_C$$ 역시 마찬가지다. $$i_t$$는 0과 1사이의 값을 가지며 $$f_t$$와 마찬가지로 입력으로부터 정보를 얼마나 통과 시킬지를 결정한다.
-$$\tilde{C}_t$$는 $$N_C \times 1$$ 벡터고, -1에서 1사이의 값을 가지며, 통과된 정보를 더할지 뺄지를 결정한다.
+$$i_t$$는 $$N_C \times 1$$ 벡터고, $$W_i$$는 $$N_C \times (N_H+N_X)$$ 행렬이다. $$b_i$$는 $$N_C \times 1$$ 벡터다. $$W_C, b_C$$ 역시 마찬가지다. $$i_t$$는 forget gate와 마찬가지로 시그모이드 연산을 거치므로 0과 1사이의 값을 가지며 forget gate와 비슷하게 입력으로부터 정보를 얼마나 통과 시킬지를 결정짓게 된다.
+$$\tilde{C}_t$$는 $$N_C \times 1$$ 벡터고, $$\tanh$$ 연산을 거치므로 -1에서 1사이의 값을 가진다. 이를통해 어떤 정보를 더할지 뺄지 결정하게 된다.
 
 이제 새 cell state를 계산할 수 있다.
 ![cell state](http://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-focus-C.png "cell state")
 여기서 $$\ast$$는 원소 별(element wise) 곱셈 연산이다. 이전 cell state ($$C_{t-1}$$)에 앞서 계산한 $$f_t$$를 곱하고, $$i_t \ast \tilde{C}_t$$를 더하여 새로운 cell state를 계산한다.
 당연히 $$C_t$$는 $$N_C\times 1$$ 벡터다.
 
-마지막으로 LSTM cell의 출력을 계산한다. output gate이다.
+마지막으로 LSTM cell의 출력 $$h_t$$를 계산한다. output gate이다.
 ![output gate](http://colah.github.io/posts/2015-08-Understanding-LSTMs/img/LSTM3-focus-o.png "output gate")
 먼저 $$N_C\times 1$$ 크기의 $$o_t$$를 계산한다. 역시 $$W_o$$는 $$N_C \times (N_H+N_X)$$ 행렬 $$b_o$$는 $$N_C \times 1$$ 벡터다. 그리고나서 $$o_t \ast \tanh (C_t)$$를 해서 출력 $$h_t$$를 계산한다.
-이때 한 가지 문제가 생긴다. 일단 $$N_H=N_C$$라면 $$h_t$$의 크기가 $$h_{t-1}$$과 같기때문에 다음 LSTM 셀의 입력으로 들어 갈 수 있다. 하지만 $$N_H \neq N_C$$라면 $$h_t$$와 $$h_{t-1}$$가 다른 크기를 가져서 문제가 생긴다.
-이때는 $$h_t$$의 크기를 $$N_H$$로 맞춰주는 레이어를 하나 더 둠으로써 해결한다. 이 레이어를 프로젝션(projection) 레이어라고도 부른다. 즉, $$h_t' = W_H h_t + b_H$$로 $$N_H \times 1$$ 크기를 가지는 프로젝션된 $$h_t'$$를 계산하는 레이어를 두어 $$h_t'$$를 다음 셀의 입력으로 보낸다. (이 부분은 그림에서 빠져있다. 아마 $$H=C$$인 경우에 대해서만 그린것 같다. [그림 출처](http://colah.github.io/posts/2015-08-Understanding-LSTMs/))
+
+그런데 이때 한 가지 문제가 생긴다. 일단 $$N_H=N_C$$라면 $$h_t$$의 크기가 $$h_{t-1}$$과 같기때문에 다음 LSTM 셀의 입력으로 들어 갈 수 있다. 하지만 $$N_H \neq N_C$$라면 $$h_t$$와 $$h_{t-1}$$가 다른 크기를 가져서 문제가 생긴다.
+이때는 $$h_t$$의 크기를 $$N_H$$로 맞춰주는 레이어를 하나 더 둠으로써 해결한다. 이 레이어를 프로젝션(projection) 레이어라고도 부른다. 즉, $$h_t' = W_H h_t + b_H$$로 $$N_H \times 1$$ 크기를 가지는 $$h_t'$$를 계산하는 레이어를 두어 $$h_t'$$를 다음 셀의 입력으로 보낸다. (이 부분은 그림에서 빠져있다. 아마 $$H=C$$인 경우에 대해서만 그린것 같다. [그림 출처](http://colah.github.io/posts/2015-08-Understanding-LSTMs/))
 $$W_H$$는 $$N_H\times N_C$$ 행렬이고 $$b_H$$는 $$N_H\times 1$$ 벡터다.
 
-LSTM 네트워크의 초기 cell state와 $$h_0$$는 영 벡터를 쓰거나 임의의 값으로 초기화 하기도 한다. 또 일련의 연결된 LSTM 셀들은 같은 웨이트를 가진다(weight sharing). 그러면 LSTM 네트워크에서 학습해야할 것들은, $$W_f, b_f, W_i, b_i, W_C, b_C, W_o, b_o$$, 그리고 프로젝션 레이어가 있다면 $$W_H, b_H$$ 이다.
+LSTM 네트워크의 초기 cell state와 $$h_0$$는 영 벡터를 쓰거나 임의의 값을 주기도 한다. 또 일련의 연결된 LSTM 셀들은 같은 웨이트를 가진다(weight sharing). 그러면 LSTM 네트워크에서 훈련시켜야할 것들은, $$W_f, b_f, W_i, b_i, W_C, b_C, W_o, b_o$$, 그리고 프로젝션 레이어가 있다면 $$W_H, b_H$$ 이다.
 
 -----
 ## LSTM in Tensorflow and Numpy
@@ -62,7 +63,7 @@ LSTM 네트워크의 초기 cell state와 $$h_0$$는 영 벡터를 쓰거나 임
 
 4~7번 줄에서 입력 벡터의 크기는 3, cell state 벡터의 크기는 4, 출력 벡터의 크기는 5, 시퀀스 길이는 10으로 정했다.
 8번줄의 `forget_bias_value`는 tensorflow의 LSTM에서 사용되는 변수다. 
-forget gate의 bias로써 트레이닝 시작 단계의 입력이 희미해(forgetting) 지는 것을 방지하게 해준다([참고](https://www.tensorflow.org/api_docs/python/tf/contrib/rnn/LSTMCell)).
+forget gate의 bias로써 디폴트로 `1`이 설정되어있다. 트레이닝 시작 단계에서 입력의 영향력이 줄어드는 것(forgetting)을 방지하게 해준다([참고](https://www.tensorflow.org/api_docs/python/tf/contrib/rnn/LSTMCell)).
 
 10번 줄부터 31번 줄이 텐서플로로 구현한 LSTM 네트워크이다. 
 11~13번 줄에서 입력($$x_t$$)과 초기 상태($$C_0, h_0$$)를 위한 placeholder를 정의해 주었고 numpy와 precision을 맞추기위해 `tf.float64`를 사용하였다.
@@ -70,12 +71,12 @@ forget gate의 bias로써 트레이닝 시작 단계의 입력이 희미해(forg
 21번 줄에서 `seq_len`만큼 연결된 LSTM 네트워크를 `dynamic_rnn` 함수로 만들었고 초기 cell state($$C_0$$)와 $$h_0$$ 벡터를 넘겨주었다.
 28번 줄에서 모든 시퀀스 $$t$$에 대해서 $$x_t = (1,1,1)$$인 입력 벡터와 임의의 값을 가지는 $$C_0$$와 $$h_0$$를 LSTM 네트워크로 넘겨주고있다. 
 텐서플로에서는 17번 줄처럼 `initializer`를 따로 정해주지 않을 경우, 랜덤으로 초기화된 weight를 가지는 LSTM 셀을 생성한다.
-따라서 33~35번 줄에서 텐서플로로 생성된 LSTM의 weight 값들을 저장했다. 추후 이 값을 numpy로 구현한 LSTM에서 사용할 것이다.
+따라서 33~35번 줄에서 텐서플로로 생성된 LSTM의 weight 값들을 저장했다. 결과를 재현하기위해 이 값을 numpy로 구현한 LSTM에서 사용할 것이다.
 
 40에서 77번 줄은 numpy로 구현한 LSTM 네트워크이다. 44~46번 줄에서 텐서플로 LSTM에서 사용했던 입력과 초기상태와 같은 값으로 numpy LSTM의 입력과 초기상태를 준비한다.
 50번 줄에서 입력 `x_np[seq]`와 이전 출력 `h_np`를 concatenation하고 있다. 이 결과로 `args`의 크기(원소 수)는 `num_input + num_hidden` 인 벡터가 된다.
 이제 텐서플로의 결과를 재현하기 위해서 텐서플로 LSTM의 weight 값과 bias 값을 가져와야한다. 51, 52번 줄에서 그 값들을 복사하고 있다. `weights_tf`의 0번째에는 LSTM 셀의 모든 weight들이 들어있고, 1번째에는 모든 bias들이 들어있다.
-또 projection layer가 있다면 2번째에 그 weight가 들어있다 (projection layer의 경우 bias는 없다). 이때 `weights_tf`의 0번째에는 $$W_i, W_C, W_f, W_o$$가 순서대로 들어있어 $$(4N_C) \times (H+X)$$ 크기의 행렬이 들어있다.
+또 projection layer가 있다면 2번째에 그 weight가 들어있다 (projection layer의 경우 bias는 없다). 이때 `weights_tf`의 0번째에는 $$W_i, W_C, W_f, W_o$$가 순서대로 들어있어서 $$(4N_C) \times (H+X)$$ 크기의 행렬이 들어있다.
 1번째에는 그에 상응하는 bias들이 들어있어 $$(4N_C) \times 1$$ 크기의 벡터가 들어있다. 58, 59번 줄에서 이 weight와 bias들을 이용해 행렬 연산을 하는데 이때 이용되는 트릭은 다음과 같다.
 
 $$ \underbrace { \left( \begin{array}{c} W_i \\ W_C \\ W_f \\ W_o \end{array} \right) }_{(4N_C) \times (H+X)} \cdot 
@@ -133,7 +134,6 @@ for w_ in range(len(lstm.weights)):
 print('TF-LSTM')
 print('\tc={}\n\th={}'.format(state_.c, state_.h))
 
-
 # numpy LSTM
 def sigmoid_array(x):
     return 1 / (1+np.exp(-x))
@@ -175,6 +175,7 @@ for seq in range(seq_len):
     
 print('NP-LSTM')
 print('\tc={}\n\th={}'.format(c_new, h_new))
+
 
 # check code
 for chk in range(len(out_np)):
