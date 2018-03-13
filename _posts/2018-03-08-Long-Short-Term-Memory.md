@@ -194,7 +194,7 @@ for chk in range(len(out_np)):
 위 그림에서 화살표는 forward pass에서 벡터의 흐름이고, 노드는 특정 연산을 의미한다. concatenation 연산($${z}$$) 제외한 나머지 노드들은 element wise 연산이다. 화살표 중간의 weight 매트릭스들은 훈련시켜야할 파라미터들이고 linear transformation (매트릭스, 벡터 곱셈)을 한다.
 화살표의 파란색 글씨는 backpropagation시 계산해야할 gradient들이다. 위 그림에서 주의해야할 점이 있다. $$h_t$$를 프로젝션해서 생성한 $$v_t$$를 출력으로 사용하고 있는데 이것을 다음 시퀀스의 입력으로 사용하지 않고 있다. 대신 프로젝션 하기 전의 $$h_t$$를 다음 셀의 입력으로 보낸다. 즉, $$N_C = N_H$$로 $$h_t$$와 $$C_t$$의 크기가 같다. 
 
-그럼 우선 다시 LSTM에서 forward pass 연산을 정리해보자.
+그럼 우선 다시 LSTM의 forward pass 연산을 정리해보자.
 
 $$
 \begin{eqnarray}
