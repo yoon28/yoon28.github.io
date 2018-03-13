@@ -191,14 +191,32 @@ for chk in range(len(out_np)):
 
 ![a LSTM cell](http://blog.varunajayasiri.com/ml/lstm.svg "a LSTM cell")
 
-위 그림에서 화살표는 벡터의 흐름이고, 노드는 특정 연산을 의미한다. concatenation 연산($${z}$$) 제외한 나머지 노드들은 element wise 연산이다. 화살표 중간의 weight 매트릭스들은 훈련시켜야할 파라미터들이고 linear transformation (매트릭스, 벡터 곱셈)을 한다.
+위 그림에서 화살표는 forward pass에서 벡터의 흐름이고, 노드는 특정 연산을 의미한다. concatenation 연산($${z}$$) 제외한 나머지 노드들은 element wise 연산이다. 화살표 중간의 weight 매트릭스들은 훈련시켜야할 파라미터들이고 linear transformation (매트릭스, 벡터 곱셈)을 한다.
 화살표의 파란색 글씨는 backpropagation시 계산해야할 gradient들이다. 위 그림에서 주의해야할 점이 있다. $$h_t$$를 프로젝션해서 생성한 $$v_t$$를 출력으로 사용하고 있는데 이것을 다음 시퀀스의 입력으로 사용하지 않고 있다. 대신 프로젝션 하기 전의 $$h_t$$를 다음 셀의 입력으로 보낸다. 즉, $$N_C = N_H$$로 $$h_t$$와 $$C_t$$의 크기가 같다. 
 
-그럼 위 네트워크의 loss 레이어를 softmax cross entropy로 정의하자. 즉,
+그럼 우선 다시 LSTM에서 forward pass 연산을 정리해보자.
+
+$$
+\begin{eqnarray}
+    z_t &=& [h_{t-1}, x_t] \\
+    f_t^{\star} &=& W_f\cdot z_t + b_f \\
+    i_t^{\star} &=& W_i\cdot z_t + b_i \\
+    \bar{C}_t^{\star} &=& W_C\cdot z_t + b_C \\
+    o_t^{\star} &=& W_o\cdot z_t + b_o \\
+    f_t &=& \sigma(f_t^{\star}) \\
+    i_t &=& \sigma(i_t^{\star}) \\
+    \bar{C}_t &=& \tanh(\bar{C}_t^{\star}) \\
+    o_t &=& \sigma(o_t^{\star}) \\
+    C_t &=& f_t \ast C_{t-1} + i_t \ast \bar{C}_t \\
+    h_t &=& o_t \ast \tanh(C_t) \\
+\end{eqnarray}
+$$
+
+그리고 loss 레이어를 softmax cross entropy로 정의하자. 즉,
 
 $$ L_k = - \sum_{t=k}^{T}{y_t \log{\hat{y}_t}} \\ L = L_1 \\ \hat{y}_t = \text{softmax}(v_t) \\ v_t = W_v \cdot h_t +b_v$$
 
-이고, 이때 $$y$$는 레이블이다.
+이고, 이때 $$y_t$$는 $$t$$번째 시퀀스의 레이블이고 one hot encoding으로 되어있다.
 
 이제 그래디언트를 구하자. 위 그림에 있는 표기법을 따라서 정리하면 아래와 같다.
 
@@ -261,8 +279,11 @@ $$
 
 여기서 구현하고자 하는 것은 위 그림과 동일하며, 다만 가운데의 hidden layer가 RNN이 아닌 LSTM을 사용한다는 것만 다르다. 아래에서 사용한 `input.txt` 파일은 [여기](http://cs.stanford.edu/people/karpathy/char-rnn/shakespear.txt)에서 구한 것이다.
 
+211번 줄의 `gradient_check` 함수는 계산한(analytical) 그래디언트를 수치(numerical) 계산한 그래디언트와 비교하여 에러를 체크하고 있다.
+
 {% highlight python linenos %}
 import numpy as np
+from random import uniform
 
 data = open('input.txt', 'r').read()
 chars = np.sort(list(set(data)))
@@ -275,7 +296,7 @@ idx_to_char = {i: ch for i, ch in enumerate(chars)}
 num_cell = 128
 z_size = num_input + num_cell
 seq_len = 29
-learning_rate = 3*1e-4
+learning_rate = 1e-4
 forget_bias_value = 0
 weight_init_sd = 0.1
 np.random.seed(2018)
@@ -303,7 +324,69 @@ parameters = {
     'b_v': np.zeros((num_input, 1))
 }
 
+def calc_numerical_gradient(aparam, idx, delta, inputs, targets, h_prev, C_prev):
+    old_val = parameters[aparam].flat[idx]
+    
+    x_t, C_t, h_t, y_t = {}, {}, {}, {}
+    h_t[-1] = np.copy(h_prev)
+    C_t[-1] = np.copy(C_prev)
 
+    # evaluate loss at [x + delta] and [x - delta]
+    parameters[aparam].flat[idx] = old_val + delta
+    loss_plus_delta = 0
+    for t in range(seq_len):
+        x_t[t] = np.zeros((num_input, 1))
+        x_t[t][inputs[t]] = 1
+        (_, _, _, _, C_t[t],
+            _, h_t[t], _, y_t[t]) = forward(x_t[t], h_t[t - 1], C_t[t - 1])
+        loss_plus_delta += - np.log(y_t[t][targets[t], 0])
+    
+    x_t, C_t, h_t, y_t = {}, {}, {}, {}
+    h_t[-1] = np.copy(h_prev)
+    C_t[-1] = np.copy(C_prev)
+
+    parameters[aparam].flat[idx] = old_val - delta
+    loss_mins_delta = 0
+    for t in range(seq_len):
+        x_t[t] = np.zeros((num_input, 1))
+        x_t[t][inputs[t]] = 1
+        (_, _, _, _, C_t[t],
+            _, h_t[t], _, y_t[t]) = forward(x_t[t], h_t[t - 1], C_t[t - 1])
+        loss_mins_delta += - np.log(y_t[t][targets[t], 0])
+    
+    parameters[aparam].flat[idx] = old_val #reset
+
+    grad_numerical = (loss_plus_delta - loss_mins_delta) / (2 * delta)
+    # Clip numerical error because analytical gradient is also clipped
+    [grad_numerical] = np.clip([grad_numerical], -1, 1) 
+    
+    return grad_numerical
+
+def gradient_check(num_checks, delta, inputs, target, h_prev, C_prev, dParam):
+    # To calculate computed gradients    
+    for aparam in parameters:
+        #Make a copy because this will get modified
+        d_copy = np.copy(dParam[aparam])
+        
+        # Test num_checks times
+        for i in range(num_checks):
+            # Pick a random index
+            rnd_idx = int(uniform(0, d_copy.size))            
+            grad_numerical = calc_numerical_gradient(aparam,
+                                                     rnd_idx,
+                                                     delta,
+                                                     inputs,
+                                                     target,
+                                                     h_prev, C_prev)
+            
+            grad_analytical = d_copy.flat[rnd_idx]
+            abs_err = abs(grad_analytical - grad_numerical)
+            
+            # If relative error is greater than 1e-04
+            if abs_err > 1e-04:
+                print('Gradient error: %s (%f, %f) => %f'
+                      %(aparam, grad_numerical, grad_analytical, abs_err))
+                      
 def forward(x, h_prev, C_prev):
     z = np.concatenate((h_prev, x), axis=0)
 
@@ -386,16 +469,16 @@ def train_one_sample(inputs, targets, h_start, C_start):
         loss += -np.log(y_t[t][targets[t], 0])
 
     dParam = {
-    'W_f': np.zeros_like(parameters['W_f']),
-    'b_f': np.zeros_like(parameters['b_f']),
-    'W_i': np.zeros_like(parameters['W_i']),
-    'b_i': np.zeros_like(parameters['b_i']),
-    'W_C': np.zeros_like(parameters['W_C']),
-    'b_C': np.zeros_like(parameters['b_C']),
-    'W_o': np.zeros_like(parameters['W_o']),
-    'b_o': np.zeros_like(parameters['b_o']),
-    'W_v': np.zeros_like(parameters['W_v']),
-    'b_v': np.zeros_like(parameters['b_v'])}
+        'W_f': np.zeros_like(parameters['W_f']),
+        'b_f': np.zeros_like(parameters['b_f']),
+        'W_i': np.zeros_like(parameters['W_i']),
+        'b_i': np.zeros_like(parameters['b_i']),
+        'W_C': np.zeros_like(parameters['W_C']),
+        'b_C': np.zeros_like(parameters['b_C']),
+        'W_o': np.zeros_like(parameters['W_o']),
+        'b_o': np.zeros_like(parameters['b_o']),
+        'W_v': np.zeros_like(parameters['W_v']),
+        'b_v': np.zeros_like(parameters['b_v'])}
     
     dh_latest = np.zeros_like(h_start)
     dC_latest = np.zeros_like(C_start)
@@ -407,6 +490,9 @@ def train_one_sample(inputs, targets, h_start, C_start):
     # gradient clipping
     for param in dParam:
         np.clip(dParam[param], -1, 1, out=dParam[param])
+
+    # check gradient computation: analytical gradient vs numerical gradent
+    gradient_check(3, 1e-6, inputs, targets, h_start, C_start, dParam) 
 
     # parameter update, SGD
     for param in dParam:
@@ -438,6 +524,7 @@ if __name__ == '__main__':
     h_state = np.zeros((num_cell, 1))
     C_state = np.zeros((num_cell, 1))
     num_iter = 0
+    change_pt = 20000
     smooth_loss = -np.log(1.0/num_input) * seq_len
     while True:
         
@@ -453,12 +540,14 @@ if __name__ == '__main__':
         smooth_loss = smooth_loss * 0.999 + loss * 0.001
 
         # print(num_iter, loss)
-        if(num_iter%100) == 0:
+        if(num_iter%100) == 0 and num_iter > 0:
             atext = predict(h_state, C_state, inputs[0], 200)
             print('\n------------------------------------------------------')
-            print('{}th smooth_loss: {}'.format(num_iter, smooth_loss))
-            print('Sample Result:\n %s' %(atext, ) )
+            print('{}th smooth_loss: {}, lr: {}'.format(num_iter, smooth_loss, learning_rate))
+            print('Sample Result:\n %s'%(atext,))
+            if(num_iter% change_pt) == 0 and learning_rate > 1e-6:
+                learning_rate/=1.25
         
-        data_ptr += np.random.randint(seq_len+1)
+        data_ptr += np.random.randint(seq_len) + 1
         num_iter += 1
 {% endhighlight %}
