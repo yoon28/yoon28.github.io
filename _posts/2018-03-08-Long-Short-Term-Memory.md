@@ -297,9 +297,8 @@ num_cell = 128
 z_size = num_input + num_cell
 seq_len = 29
 learning_rate = 1e-4
-forget_bias_value = 0
+forget_bias_value = 1
 weight_init_sd = 0.1
-np.random.seed(2018)
 
 # numpy LSTM
 def sigmoid(x):
@@ -546,7 +545,7 @@ if __name__ == '__main__':
             print('{}th smooth_loss: {}, lr: {}'.format(num_iter, smooth_loss, learning_rate))
             print('Sample Result:\n %s'%(atext,))
             if(num_iter% change_pt) == 0 and learning_rate > 1e-6:
-                learning_rate/=1.25
+                learning_rate*=0.9
         
         data_ptr += np.random.randint(seq_len) + 1
         num_iter += 1
