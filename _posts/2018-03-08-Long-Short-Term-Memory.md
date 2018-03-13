@@ -21,7 +21,7 @@ tags:
 ![a LSTM cell](http://blog.varunajayasiri.com/ml/lstm.svg "a LSTM cell")
 
 위 그림은 LSTM의 가장 일반적인 형태(Vanilla LSTM)다. 위 그림에서 $$x_t$$ 는 입력(input)이고, $$h_{t}$$는 출력(output), $$C_{t}$$는 cell state이고 모두 벡터다. 최초 $$h_0$$와 $$C_0$$는 주어진다. (주로 영 벡터로 초기화하거나 임의의 벡터를 준다.)
-LSTM은 RNN의 특별한 케이스로 RNN처럼 LSTM 셀들을 일렬로 연결해 시퀀스(혹은 시계열) 데이터를 처리 할 수 있다. 따라서 첨자 $$t$$는 $$t$$번째 시퀀스를 뜻한다. $$t$$번째 셀은 입력 $$x_t$$와 함께 이전 셀의 출력 ($$h_{t-1}$$)과 cell state ($$C_{t-1}$$)를 입력으로 받는다.
+LSTM은 RNN의 특별한 케이스로 RNN처럼 LSTM 셀들을 일렬로 연결해 시퀀스(혹은 시계열) 데이터를 처리 할 수 있다. 따라서 첨자 $$t$$는 $$t$$번째 시퀀스를 뜻한다. $$t$$번째 셀은 입력 $$x_t$$와 함께 이전 셀의 출력 ($$h_{t-1}$$)과 cell state ($$C_{t-1}$$)를 입력으로 받는다. (위 그림에서 $$v_t$$도 LSTM의 출력이다. LSTM의 출력 $$h_t$$로부터 원하는 크기의 벡터를 만들기 위해 프로젝션 레이어를 하나 더 둔 것이다.)
 
 다음 그림에 3개의 LSTM cell들이 연결되어져있다.
 
@@ -279,6 +279,7 @@ $$
 
 여기서 구현하고자 하는 것은 위 그림과 동일하며, 다만 가운데의 hidden layer가 RNN이 아닌 LSTM을 사용한다는 것만 다르다. 아래에서 사용한 `input.txt` 파일은 약 10만개의 문자열을 포함하고 있고 셰익스피어의 작품이다. ([여기](http://cs.stanford.edu/people/karpathy/char-rnn/shakespear.txt)에서 다운 받을수 있음.)
 
+여기서 numpy로 구현한 LSTM은 $$N_C = N_H$$이다. 다만, 출력을 $$N_X \times 1$$으로 맞추기 위한 레이어 ($$v_t$$)가 있다.  
 backpropagation 관련 코드는 121~164 번줄에 있다.
 211번 줄의 `gradient_check` 함수는 계산한(analytical) 그래디언트를 수치(numerical) 계산한 그래디언트와 비교하는 테스트 코드다.
 
