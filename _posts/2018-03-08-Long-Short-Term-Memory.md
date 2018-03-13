@@ -271,15 +271,16 @@ $$
 
 그럼 이제 LSTM을 numpy로 직접 구현하고 training 시켜보는 것까지 해보자.
 주어진 문자열의 바로 다음에 올 문자열을 예측하는 LSTM 네트워크를 훈련 시켜볼 것이다.
-트레이닝의 입력으로 일정 길이의 문자열 시퀀스를 주고 바로 다음 문자열을 타겟으로 준다. 
+트레이닝의 입력으로 일정 길이의 문자열 시퀀스를 주고 바로 다음 문자열을 타겟으로 준다. (타켓은 입력보다 한 시퀀스 느린 문자열이다. 코드의 252번줄에서 타겟을 어떻게 만들었는지 확인할 수 있다.)
 테스트 단계에서는 첫 문자열을 입력으로 주고, 출력된 LSTM의 결과를 다음 시퀀스의 입력으로 준다.
 ([이곳](http://blog.varunajayasiri.com/numpy_lstm.html)과 [이곳](http://karpathy.github.io/2015/05/21/rnn-effectiveness/)을 참고하였음)
 
 ![RNN example](http://karpathy.github.io/assets/rnn/charseq.jpeg "RNN example")
 
-여기서 구현하고자 하는 것은 위 그림과 동일하며, 다만 가운데의 hidden layer가 RNN이 아닌 LSTM을 사용한다는 것만 다르다. 아래에서 사용한 `input.txt` 파일은 [여기](http://cs.stanford.edu/people/karpathy/char-rnn/shakespear.txt)에서 구한 것이다.
+여기서 구현하고자 하는 것은 위 그림과 동일하며, 다만 가운데의 hidden layer가 RNN이 아닌 LSTM을 사용한다는 것만 다르다. 아래에서 사용한 `input.txt` 파일은 약 10만개의 문자열을 포함하고 있고 셰익스피어의 작품이다. ([여기](http://cs.stanford.edu/people/karpathy/char-rnn/shakespear.txt)에서 다운 받을수 있음.)
 
-211번 줄의 `gradient_check` 함수는 계산한(analytical) 그래디언트를 수치(numerical) 계산한 그래디언트와 비교하여 에러를 체크하고 있다.
+backpropagation 관련 코드는 121~164 번줄에 있다.
+211번 줄의 `gradient_check` 함수는 계산한(analytical) 그래디언트를 수치(numerical) 계산한 그래디언트와 비교하는 테스트 코드다.
 
 {% highlight python linenos %}
 import numpy as np
