@@ -222,19 +222,19 @@ $$ L_k = - \sum_{t=k}^{T}{y_t \log{\hat{y}_t}} \\ L = L_1 \\ \hat{y}_t = \text{s
 
 $$ 
 \begin{eqnarray}
-    dv_t = \frac{dL_t}{dv_t} &=& \hat{y}_t - y_t  \\
-    dh_t = \frac{dL_t}{dh_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t} =  W_v^T\cdot dv_t + dh_t' \\
-    do_t = \frac{dL_t}{do_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{do_t} =  dh_t \ast \tanh(C_t) \\
-    dC_t = \frac{dL_t}{dC_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{dC_t} = dh_t \ast o_t \ast (1-\tanh^2(C_t)) + dC_t' \\
-    d\bar{C}_t = \frac{dL_t}{d\bar{C}_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{dC_t}\frac{dC_t}{d\bar{C}_t} = dC_t \ast i_t \\
-    di_t = \frac{dL_t}{di_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{dC_t}\frac{dC_t}{di_t} = dC_t \ast \bar{C}_t \\
-    df_t = \frac{dL_t}{df_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{dC_t}\frac{dC_t}{df_t} = dC_t \ast C_{t-1} \\
-    do_t^{\star} = \frac{dL_t}{df_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{do_t}\frac{do_t}{do_t^{\star}} = do_t \ast o_t \ast (1-o_t) \\
-    df_t^{\star} = \frac{dL_t}{df_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{dC_t}\frac{dC_t}{df_t}\frac{df_t}{df_t^{\star}} = df_t \ast f_t \ast (1-f_t) \\
-    di_t^{\star} = \frac{dL_t}{df_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{dC_t}\frac{dC_t}{di_t}\frac{di_t}{di_t^{\star}} = di_t \ast i_t \ast (1-i_t) \\
-    d\bar{C}_t^{\star} = \frac{dL_t}{df_t} &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{dC_t}\frac{dC_t}{d\bar{C}_t}\frac{d\bar{C}_t}{d\bar{C}_t^{\star}} = d\bar{C}_t \ast (1-\bar{C}_t^2)) \\
-    dz_t = \frac{dL_t}{dz_t} &=& W_f^T \cdot df_t^{\star} + W_i^T \cdot di_t^{\star} + W_C^T \cdot d\bar{C}_t^{\star} + W_o^T \cdot do_t^{\star} \\  \\
-    dC_{t-1}' &=& \frac{dL_t}{dv_t}\frac{dv_t}{dh_t}\frac{dh_t}{dC_t}\frac{dC_t}{dC_{t-t}} = dC_t * f_t \\
+    dv_t = \frac{\partial L_t}{\partial v_t} &=& \hat{y}_t - y_t  \\
+    dh_t = \frac{\partial L_t}{\partial h_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t} =  W_v^T\cdot dv_t + dh_t' \\
+    do_t = \frac{\partial L_t}{\partial o_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial o_t} =  dh_t \ast \tanh(C_t) \\
+    dC_t = \frac{\partial L_t}{\partial C_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial C_t} = dh_t \ast o_t \ast (1-\tanh^2(C_t)) + dC_t' \\
+    d\bar{C}_t = \frac{\partial L_t}{\partial \bar{C}_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial C_t}\frac{\partial C_t}{\partial \bar{C}_t} = dC_t \ast i_t \\
+    di_t = \frac{\partial L_t}{\partial i_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial C_t}\frac{\partial C_t}{\partial i_t} = dC_t \ast \bar{C}_t \\
+    df_t = \frac{\partial L_t}{\partial f_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial C_t}\frac{\partial C_t}{\partial f_t} = dC_t \ast C_{t-1} \\
+    do_t^{\star} = \frac{\partial L_t}{\partial f_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial o_t}\frac{\partial o_t}{\partial o_t^{\star}} = do_t \ast o_t \ast (1-o_t) \\
+    df_t^{\star} = \frac{\partial L_t}{\partial f_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial C_t}\frac{\partial C_t}{\partial f_t}\frac{\partial f_t}{\partial f_t^{\star}} = df_t \ast f_t \ast (1-f_t) \\
+    di_t^{\star} = \frac{\partial L_t}{\partial f_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial C_t}\frac{\partial C_t}{\partial i_t}\frac{\partial i_t}{\partial i_t^{\star}} = di_t \ast i_t \ast (1-i_t) \\
+    d\bar{C}_t^{\star} = \frac{\partial L_t}{\partial f_t} &=& \frac{\partial L_t}{\partial v_t}\frac{\partial v_t}{\partial h_t}\frac{\partial h_t}{\partial C_t}\frac{\partial C_t}{\partial \bar{C}_t}\frac{\partial \bar{C}_t}{\partial \bar{C}_t^{\star}} = d\bar{C}_t \ast (1-\bar{C}_t^2)) \\
+    dz_t = \frac{\partial L_t}{\partial z_t} &=& W_f^T \cdot df_t^{\star} + W_i^T \cdot di_t^{\star} + W_C^T \cdot d\bar{C}_t^{\star} + W_o^T \cdot do_t^{\star} \\  \\
+    dC_{t-1}' &=& \frac{\partial L_t}{\partial v_t}\frac{dv_t}{\partial h_t}\frac{\partial h_t}{\partial C_t}\frac{\partial C_t}{\partial C_{t-t}} = dC_t * f_t \\
     [dh_{t-1}' , dx_t] &=& dz_t     
 \end{eqnarray}
 $$ 
