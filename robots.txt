@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://yoon28.github.io/sitemap.xml
